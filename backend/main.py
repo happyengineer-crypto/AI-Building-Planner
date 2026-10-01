@@ -1,18 +1,25 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Dict
+
+from question_engine import get_next_question
 
 
 app = FastAPI(
     title="AI Building Planner",
     description="AI-powered architectural planning backend",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
 class PlotRequest(BaseModel):
-    width: float = Field(gt=0, description="Plot width")
-    length: float = Field(gt=0, description="Plot length")
-    unit: str = Field(default="ft", description="Measurement unit")
+    width: float
+    length: float
+    unit: str = "ft"
+
+
+class QuestionRequest(BaseModel):
+    answers: Dict = {}
 
 
 @app.get("/")
@@ -20,7 +27,7 @@ def root():
     return {
         "project": "AI Building Planner",
         "status": "running",
-        "version": "0.1.0",
+        "version": "0.2.0",
     }
 
 
@@ -40,5 +47,14 @@ def analyze_plot(plot: PlotRequest):
         "length": plot.length,
         "unit": plot.unit,
         "area": area,
-        "message": "Plot analyzed successfully."
+        "message": "Plot analyzed successfully.",
+    }
+
+
+@app.post("/requirements/next-question")
+def next_question(request: QuestionRequest):
+    question = get_next_question(request.answers)
+
+    return {
+        "next_question": question
     }
