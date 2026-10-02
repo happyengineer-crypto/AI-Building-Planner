@@ -10,27 +10,15 @@ QUESTIONS = [
     },
     {
         "key": "building_type",
-        "question": "Building residential house, bungalow, commercial plaza ya apartment hai?",
+        "question": "Building type kya hai? Residential house, bungalow, commercial plaza ya apartment?",
         "type": "text",
-        "required": True,
-    },
-    {
-        "key": "plot_width",
-        "question": "Plot ki width kitni hai?",
-        "type": "number",
-        "required": True,
-    },
-    {
-        "key": "plot_length",
-        "question": "Plot ki length/depth kitni hai?",
-        "type": "number",
         "required": True,
     },
     {
         "key": "floors",
         "question": "Aap kitne floors banana chahte hain?",
         "type": "number",
-        "required": False,
+        "required": True,
     },
     {
         "key": "bedrooms",
@@ -51,8 +39,20 @@ QUESTIONS = [
         "required": False,
     },
     {
+        "key": "kitchen",
+        "question": "Kitni kitchens chahiye?",
+        "type": "number",
+        "required": False,
+    },
+    {
+        "key": "servant_room",
+        "question": "Kya servant room chahiye?",
+        "type": "text",
+        "required": False,
+    },
+    {
         "key": "special_requirements",
-        "question": "Koi special requirement hai? Misal ke taur par lawn, servant room, office ya separate entrance.",
+        "question": "Koi special requirement hai? Misal ke taur par lawn, office, separate entrance ya store room.",
         "type": "text",
         "required": False,
     },
@@ -62,25 +62,28 @@ QUESTIONS = [
 def get_next_question(answers: Dict) -> Dict:
     """
     Return the first unanswered required question.
+    After required questions are completed,
+    return optional questions one by one.
     """
 
+    # First ask required questions
     for question in QUESTIONS:
         key = question["key"]
 
         if question["required"] and not answers.get(key):
             return question
 
-    # After required information is collected,
-    # ask optional questions one by one.
+    # Then ask optional questions
     for question in QUESTIONS:
         key = question["key"]
 
         if not answers.get(key):
             return question
 
+    # All questions completed
     return {
         "key": None,
-        "question": "Basic requirements complete.",
+        "question": "Basic building requirements complete.",
         "type": "complete",
         "required": False,
     }
