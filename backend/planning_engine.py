@@ -14,16 +14,18 @@ def generate_basic_plan(project) -> Dict:
     parking = project.car_parking or 0
 
     ground_floor = []
-    upper_floors = []
+    upper_floor_spaces = []
 
-    # Parking
+    # -------------------------
+    # Ground Floor
+    # -------------------------
+
     if parking > 0:
         ground_floor.append({
             "space": "Car Parking",
             "quantity": parking
         })
 
-    # Main common spaces
     ground_floor.extend([
         {
             "space": "Drawing Room",
@@ -35,21 +37,29 @@ def generate_basic_plan(project) -> Dict:
         }
     ])
 
-    # Kitchen
     if kitchens > 0:
         ground_floor.append({
             "space": "Kitchen",
             "quantity": kitchens
         })
 
-    # Servant room
-    if project.servant_room:
+    # Treat only explicit yes/true values as servant room required
+    servant_required = str(project.servant_room).strip().lower() in {
+        "yes",
+        "true",
+        "required"
+    }
+
+    if servant_required:
         ground_floor.append({
             "space": "Servant Room",
             "quantity": 1
         })
 
+    # -------------------------
     # Bedrooms
+    # -------------------------
+
     bedrooms_on_ground = min(bedrooms, 1)
 
     if bedrooms_on_ground > 0:
@@ -61,12 +71,15 @@ def generate_basic_plan(project) -> Dict:
     remaining_bedrooms = bedrooms - bedrooms_on_ground
 
     if remaining_bedrooms > 0:
-        upper_floors.append({
+        upper_floor_spaces.append({
             "space": "Bedroom",
             "quantity": remaining_bedrooms
         })
 
+    # -------------------------
     # Bathrooms
+    # -------------------------
+
     bathrooms_on_ground = min(bathrooms, 1)
 
     if bathrooms_on_ground > 0:
@@ -78,29 +91,41 @@ def generate_basic_plan(project) -> Dict:
     remaining_bathrooms = bathrooms - bathrooms_on_ground
 
     if remaining_bathrooms > 0:
-        upper_floors.append({
+        upper_floor_spaces.append({
             "space": "Bathroom",
             "quantity": remaining_bathrooms
         })
 
-    # Additional floors
-    additional_floors = []
+    # -------------------------
+    # Upper Floors
+    # -------------------------
 
-    for floor in range(2, floors + 1):
-        if floor == 2:
-            spaces = upper_floors
-        else:
-            spaces = [
+    upper_floors = []
+
+    if floors >= 2:
+        upper_floors.append({
+            "floor": 2,
+            "spaces": upper_floor_spaces
+        })
+
+    # Additional floors remain flexible for now.
+    # Later we will use actual planning rules
+    # and plot dimensions to distribute spaces.
+
+    for floor in range(3, floors + 1):
+        upper_floors.append({
+            "floor": floor,
+            "spaces": [
                 {
                     "space": "Flexible Room",
                     "quantity": 1
                 }
             ]
-
-        additional_floors.append({
-            "floor": floor,
-            "spaces": spaces
         })
+
+    # -------------------------
+    # Final Plan
+    # -------------------------
 
     return {
         "planning_type": "basic",
@@ -108,6 +133,6 @@ def generate_basic_plan(project) -> Dict:
             "floor": 1,
             "spaces": ground_floor
         },
-        "upper_floors": additional_floors,
+        "upper_floors": upper_floors,
         "special_requirements": project.special_requirements
-    } 
+    }
