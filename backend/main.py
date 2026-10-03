@@ -3,12 +3,13 @@ from pydantic import BaseModel
 from typing import Dict
 
 from question_engine import get_next_question
+from models import ProjectRequest
 
 
 app = FastAPI(
     title="AI Building Planner",
     description="AI-powered architectural planning backend",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -27,15 +28,13 @@ def root():
     return {
         "project": "AI Building Planner",
         "status": "running",
-        "version": "0.2.0",
+        "version": "0.3.0",
     }
 
 
 @app.get("/health")
 def health():
-    return {
-        "status": "healthy"
-    }
+    return {"status": "healthy"}
 
 
 @app.post("/plot/analyze")
@@ -57,4 +56,20 @@ def next_question(request: QuestionRequest):
 
     return {
         "next_question": question
+    }
+
+
+@app.post("/project/analyze")
+def analyze_project(project: ProjectRequest):
+    return {
+        "city": project.city,
+        "building_type": project.building_type,
+        "floors": project.floors,
+        "bedrooms": project.bedrooms,
+        "bathrooms": project.bathrooms,
+        "car_parking": project.car_parking,
+        "kitchen": project.kitchen,
+        "servant_room": project.servant_room,
+        "special_requirements": project.special_requirements,
+        "message": "Project requirements received successfully.",
     }
