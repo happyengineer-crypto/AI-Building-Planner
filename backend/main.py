@@ -4,7 +4,7 @@ from typing import Dict
 
 from question_engine import get_next_question
 from models import ProjectRequest
-
+from planning_engine import generate_basic_plan
 
 app = FastAPI(
     title="AI Building Planner",
@@ -61,7 +61,9 @@ def next_question(request: QuestionRequest):
 
 @app.post("/project/analyze")
 def analyze_project(project: ProjectRequest):
+    plan = generate_basic_plan(project)
     return {
+        "plan":plan,
         "city": project.city,
         "building_type": project.building_type,
         "floors": project.floors,
