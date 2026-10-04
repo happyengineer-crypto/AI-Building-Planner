@@ -61,6 +61,10 @@ def analyze_project(project: ProjectRequest):
     plan = generate_basic_plan(project)
     return {
         "plan":plan,
+        "plot_width": project.plot.plot_width,
+"plot_length": project.plot.plot_length,
+"plot_unit": project.plot.unit,
+"plot_area": project.plot.plot_width * project.plot.plot_length,
         "city": project.city,
         "building_type": project.building_type,
         "floors": project.floors,
