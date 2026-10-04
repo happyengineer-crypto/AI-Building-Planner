@@ -12,7 +12,9 @@ def generate_basic_plan(project) -> Dict:
     bathrooms = project.bathrooms or 0
     kitchens = project.kitchen or 0
     parking = project.car_parking or 0
-
+    plot_width = project.plot.plot_width
+    plot_length = project.plot.plot_length
+    plot_area = plot_width * plot_length
     ground_floor = []
     upper_floor_spaces = []
 
@@ -129,7 +131,13 @@ def generate_basic_plan(project) -> Dict:
 
     return {
         "planning_type": "basic",
-        "ground_floor": {
+        
+    
+    "plot_width": plot_width,
+    "plot_length": plot_length,
+    "plot_area": plot_area,
+    "ground_floor": {
+        
             "floor": 1,
             "spaces": ground_floor
         },
