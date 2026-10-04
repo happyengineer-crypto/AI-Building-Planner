@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Dict
 
 from question_engine import get_next_question
-from models import ProjectRequest
+from models import ProjectRequest, PlotRequest
 from planning_engine import generate_basic_plan
 
 app = FastAPI(
@@ -13,10 +13,7 @@ app = FastAPI(
 )
 
 
-class PlotRequest(BaseModel):
-    width: float
-    length: float
-    unit: str = "ft"
+
 
 
 class QuestionRequest(BaseModel):
@@ -39,11 +36,11 @@ def health():
 
 @app.post("/plot/analyze")
 def analyze_plot(plot: PlotRequest):
-    area = plot.width * plot.length
+plot.plot_width * plot.plot_length    
 
     return {
-        "width": plot.width,
-        "length": plot.length,
+        "width": plot.plot_width,
+        "length": plot.plot_length,
         "unit": plot.unit,
         "area": area,
         "message": "Plot analyzed successfully.",
