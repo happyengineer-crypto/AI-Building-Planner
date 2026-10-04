@@ -36,7 +36,15 @@ def health():
 
 @app.post("/plot/analyze")
 def analyze_plot(plot: PlotRequest):
-area = plot.plot_width * plot.plot_length
+
+
+
+
+
+
+
+    
+    area = plot.plot_width * plot.plot_length
 
     return {
         "width": plot.plot_width,
