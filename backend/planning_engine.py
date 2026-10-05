@@ -17,6 +17,7 @@ def generate_basic_plan(project) -> Dict:
     plot_area = plot_width * plot_length
     plot_aspect_ratio = max(plot_width, plot_length) / min(plot_width, plot_length)
     ground_floor = []
+    plot_perimeter = 2 * (plot_width + plot_length)
     upper_floor_spaces = []
 
     # -------------------------
@@ -138,7 +139,10 @@ def generate_basic_plan(project) -> Dict:
     "plot_length": plot_length,
     "plot_area": plot_area,
     "plot_aspect_ratio": plot_aspect_ratio,
+    "plot_perimeter": plot_perimeter,   
     "ground_floor": {
+        
+        
         
             "floor": 1,
             "spaces": ground_floor
